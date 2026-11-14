@@ -1,0 +1,10 @@
+# 依赖与产物不入库
+node_modules/
+out/
+*.mp4
+*.log
+
+# 系统垃圾
+.DS_Store
+Thumbs.db
+desktop.ini
