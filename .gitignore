@@ -4,6 +4,12 @@ out/
 *.mp4
 *.log
 
+# Python 缓存与虚拟环境（跑 scripts/ 会生成）
+__pycache__/
+*.pyc
+.venv/
+venv/
+
 # 系统垃圾
 .DS_Store
 Thumbs.db
