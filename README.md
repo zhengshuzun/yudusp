@@ -53,7 +53,7 @@
 
 ```
 yudusp/
-  SKILL.md                      主文件：六条不可变约束、9 步流程、换题材改哪三个文件
+  SKILL.md                      主文件：七条不可变约束、9 步流程、换题材改哪三个文件
   references/
     pipeline.md                 每一步的精确命令
     storyboard-and-beats.md     分镜怎么对齐拍点
@@ -69,6 +69,7 @@ yudusp/
     card_shapes.py              抽卡片用的国家轮廓
   assets/
     template/                   可跑的参考工程（Remotion 4 + Canvas 2D）
+      src/front-push.ts         ★ 势力推进（波前）模块，直接拷进新工程
     style-ref/                  两张做旧铜版画风格参考图
 ```
 
@@ -90,4 +91,4 @@ yudusp/
 
 ---
 
-版本：2026-11-14 导出
+版本：2026-11-15（新增 `front-push.ts` 波前模块、「推进感」规范与六项自检）

@@ -14,9 +14,9 @@ agent_created: true
 
 **不适用**：需要实拍素材的、需要人物访谈的、内容以抽象概念为主的（这类用别的形式，不要硬套地图）。
 
-## 六条不可变约束
+## 七条不可变约束
 
-换题材可以换地图、换事件、换阵营名字，但下面六条是这个系列的辨识度，任何一镜都不许破：
+换题材可以换地图、换事件、换阵营名字，但下面七条是这个系列的辨识度，任何一镜都不许破：
 
 1. **配色锁定**：红 = 扩张方，蓝金 = 抵抗与反攻方。不要为了"好看"临时改色。
 2. **机位分级不动**：单镜之内机位绝对静止；只在**换镜**时跳一个机位档（远景 → 中景 → 特写）。不允许镜内推拉摇移，也不允许连续缓推——那是纪录片，不是沙盘。
@@ -24,6 +24,7 @@ agent_created: true
 4. **无旁白**：信息全在左上日期、左下事件、中央标题三层文字里。
 5. **切点落拍格**：每个镜头切换、每条日期推进，都必须是 `phase + k × beat` 的某个值。
 6. **暗场自发光**：深黑偏蓝底 + 暗角 + 扫描网线。不加胶片颗粒、不加景深、不加噪点。
+7. **领土是"推过去"的，不是"换上去"的**：任何易主都要有一条锋线扫过——`3.0s` + `easeInOut` + 三层辉光带白芯；同一次事件的地块**并发**、共用同一条线。整块颜色瞬间替换 = 加载动画。直接用 `src/front-push.ts`，别自己写。
 
 ## 工作流
 
@@ -58,6 +59,10 @@ python scripts/clip_geo.py --src src/europe-borders.json --win -28 18 60 76 --ou
 # 3) 工程骨架
 cp -r assets/template <工程目录> && cd <工程目录>
 node -e "require('fs').symlinkSync('<已有工程>/node_modules','node_modules','junction')"
+
+# 3.1) 领土易主：拷波前模块（不要自己写，也不要拿 paint.ts 的 fillGrow 顶替）
+#      src/front-push.ts 已在模板里；把 polities 接进去即可，
+#      接入顺序见 references/code-map.md
 
 # 3.5) 事件插图（可选）：图落 public/img/<name>.png，
 #      cp <skill>/assets/template/src/assets.ts src/assets.ts，填 NODE_IMGS，

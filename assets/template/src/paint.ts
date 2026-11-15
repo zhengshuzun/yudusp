@@ -73,7 +73,12 @@ export const SIDE_EDGE: Record<Side, string> = {
 
 const dot = (x: number, y: number, dx: number, dy: number) => x * dx + y * dy;
 
-/** 沿 dir 方向以 p 为进度填充区域，边界带柔和过渡 */
+/** 沿 dir 方向以 p 为进度填充区域，边界带柔和过渡。
+ *
+ *  ⚠️ 这不是"势力推进"。它只处理**单个**多边形沿一个方向被填到几成。
+ *  用它逐块做领土易主，会得到"红蓝交界错位成两条边"和"整块啪一下变色"
+ *  这两个已被用户点名的问题——因为每块地各按自己的 dir 推。
+ *  真正的推进要**按事件共用一条锋线**，见 assets/template/src/front-push.ts。 */
 export const fillGrow = (
   ctx: CanvasRenderingContext2D,
   path: Path2D,

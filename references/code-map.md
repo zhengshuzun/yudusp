@@ -41,7 +41,7 @@ drawScanlines(ctx, 0.5)                  // 扫描网线（pattern 已缓存）
 ```ts
 getEntries()                  // 解析 GeoJSON 成 Path2D（模块级缓存，只跑一次）
 SIDE_FILL / SIDE_EDGE         // 阵营填色 / 描边色
-fillGrow(ctx, path, box, dir, prog, color)   // ★ 波前填充：占领区沿 dir 蔓延
+fillGrow(ctx, path, box, dir, prog, color)   // 单块区域沿 dir 生长（⚠ 不是势力推进，见下）
 drawLand(ctx, cam, t, dim)          // 陆地底
 drawControl(ctx, cam, t, mul)       // 势力填色（调 fillGrow）
 drawGrid(ctx, cam, a)               // 经纬网格
@@ -51,7 +51,37 @@ drawLabels(ctx, cam, t, a)          // 国家名小字
 drawCountryInBox(ctx, ...)          // 卡片里画国家轮廓
 ```
 
+> ⚠️ `fillGrow` 只解决"一个多边形沿某方向被填到几成"，**不是波前系统**。用它逐块做领土易主，就会得到 E4 里那种"边界重叠 + 啪一下变色"。势力推进请用下面的 `front-push.ts`。
+
 `drawMap()` 的图层顺序固定：**land → control → grid → glowEdges**。
+
+### `front-push.ts` — 势力推进（波前）
+
+独立模块，零依赖（`proj` 由调用方传入），纯几何 + 纯 canvas，拷贝即用。
+
+```ts
+makeFronts({ regions, order, stateAt, proj, evGap? })
+  → { frontOf(r, keyT), keyTAt(r, t), raw(r) }
+
+frontWave(f, t, rad)          // 锋线的有机起伏（两侧共用，保证严丝合缝）
+frontGeom(f, prog)            // 本帧波前位置 → { f, rad, p, span }
+clipSide(o, g, side, path?)   // 裁到波前内侧(+1) / 外侧(-1)，世界坐标构造
+frontLine(f, rad, span?)      // 锋线 Path2D
+paintFrontLine(o, g, unionPath, zoom, color?, alpha?)   // 三层辉光 + 白芯
+
+CHANGE_DUR = 3.0              // 单次易主的秒数
+easeInOut(t)                  // 别用 easeOut
+```
+
+接入到 `drawPolities` 里的顺序：
+
+1. `polityAt(r, t)` 取 `[prev, cur, p]`，`p` 用 `easeInOut`；
+2. `frontOf(r, keyTAt(r, t))` 查这次变化用的锋线；
+3. 画**让出方**的残块：`clipSide(side=-1)` + 旧色，浓度随 `p` 从 1 衰减；
+4. 画**接收方**剪影：`clipSide(side=+1)` + 新色；
+5. 最后画锋线：按「事件 + 进度」去重，一条线只画一次。
+
+细节与踩坑见 `pitfalls.md`「势力推进（波前）」。
 
 ### `fx.ts` — 特效
 
